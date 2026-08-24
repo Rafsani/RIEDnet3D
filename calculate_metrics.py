@@ -1,3 +1,6 @@
+# Metric/loss utilities. The 3D pipeline (train.py/generate.py) uses MAE,
+# PSNR and SSIM3D. The 2D SSIM/PerceptualLoss (VGG19-based, conv2d) are kept
+# for reference/slice-wise use but aren't used by the 3D training loop.
 import numpy as np
 from PIL import Image
 import torch
@@ -170,7 +173,7 @@ class PerceptualLoss(torch.nn.Module):
         self.style_layers = style_layers
         self.channel_idx = channel_idx   # if output and target have multiple channels
         if model_type == 'vgg19':
-            self.model = models.vgg19(pretrained=True).features.to(device)
+            self.model = models.vgg19(weights=models.VGG19_Weights.DEFAULT).features.to(device)
         self.model.eval()
 
     def normalize_image(self, image):

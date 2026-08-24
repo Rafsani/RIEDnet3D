@@ -1,13 +1,14 @@
-import tensorflow as tf
+from torch.utils.tensorboard import SummaryWriter
+
 
 class Logger(object):
-    """Tensorboard logger."""
+    """Tensorboard logger backed by torch.utils.tensorboard (no TensorFlow
+    dependency needed)."""
 
     def __init__(self, log_dir):
-        """Initialize summary writer."""
-        self.writer = tf.summary.create_file_writer(log_dir)
+        self.writer = SummaryWriter(log_dir)
 
     def scalar_summary(self, tag, value, step):
-        """Add scalar summary."""
-        with self.writer.as_default():
-            tf.summary.scalar(tag, value, step=step)
+        """Log a scalar value at a given step."""
+        self.writer.add_scalar(tag, value, step)
+        self.writer.flush()
